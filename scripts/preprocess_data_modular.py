@@ -61,7 +61,7 @@ def run_spot_detection(isotropic_nuclei, image_id, nchunks):
     for i in range(len(data)): 
         print(f'Processing chunk number {i}')
 
-        outdir = f'output/isotropic_spots/{image_id}_{i}.csv'
+        outdir = f'output/cell_positions/{image_id}_{i}.csv'
         pointlist = detect_spots(data[i], 4, 6)
 
         offset = data[i].shape[2] * i
@@ -84,7 +84,7 @@ def median_filter_phal(isotropic_phal, image_id, nchunks):
     for i in range(len(data)): 
         print(f'Processing chunk number {i}')
         image = cle.push(data[i])
-        image_blur = cle.median_box(image, radius_x = 1, radius_y = 1, radius_z = 1)
+        # image_blur = cle.median_box(image, radius_x = 1, radius_y = 1, radius_z = 1)
         image_blur = cle.pull(image_blur)
         isotropic_phal.append(image_blur)
         
@@ -95,7 +95,7 @@ def median_filter_phal(isotropic_phal, image_id, nchunks):
 def produce_cell_images(isotropic_nuclei, isotropic_phal, image_id, nchunks): 
 
     for i in range(nchunks): 
-        spotdir = f'output/isotropic_spots/{image_id}_{i}.csv'
+        spotdir = f'output/cell_positions/{image_id}_{i}.csv'
         centroids = pd.read_csv(spotdir)
         size = 16
         print('centroid shape: \n', centroids.shape)
@@ -119,7 +119,7 @@ def produce_cell_images(isotropic_nuclei, isotropic_phal, image_id, nchunks):
                     extracted_cell = extract_cell(nuc_pos, 
                                                 isotropic_phal, isotropic_nuclei, 
                                                 xy_size = size, z_size = size)
-                    np.save(f'output/cells/{image_id}_cell{i}_{idx}.npy', 
+                    np.save(f'output/cell_images/{image_id}_cell{i}_{idx}.npy', 
                             extracted_cell)
                 except: 
                     print(idx)
@@ -147,7 +147,8 @@ def process(image_id, nchunks, conn, overwrite = False):
     if f'{image_id}_isotropic_phal.tiff' not in os.listdir('data/isotropic_data/') or overwrite: 
         print('Producing filtered data')
         isotropic_phal = np.load(f'data/isotropic_data/{image_id}_isotropic_phal.npy')
-        median_filter_phal(isotropic_phal, image_id, nchunks)
+        tiff.imsave(f'data/isotropic_data/{image_id}_isotropic_phal.tiff', isotropic_phal)
+        # median_filter_phal(isotropic_phal, image_id, nchunks)
 
 
     produce_cell_images(isotropic_nuclei, isotropic_phal, image_id, nchunks)

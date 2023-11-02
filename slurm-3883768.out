@@ -1,0 +1,26 @@
+Thu  2 Nov 15:16:05 GMT 2023
+running download and spot detection
+Traceback (most recent call last):
+  File "scripts/preprocess_data_modular.py", line 15, in <module>
+    import config # config contains my signin info 
+ModuleNotFoundError: No module named 'config'
+running 2d cellpose segmentation
+/home/shil5659/.conda/envs/cellpose-arc/lib/python3.8/site-packages/scipy/__init__.py:146: UserWarning: A NumPy version >=1.16.5 and <1.23.0 is required for this version of SciPy (detected version 1.24.2
+  warnings.warn(f"A NumPy version >={np_minversion} and <{np_maxversion}"
+Traceback (most recent call last):
+  File "scripts/do_2d_segmentation.py", line 2, in <module>
+    from cellpose import models
+  File "/home/shil5659/.conda/envs/cellpose-arc/lib/python3.8/site-packages/cellpose/models.py", line 11, in <module>
+    from . import transforms, dynamics, utils, plot
+  File "/home/shil5659/.conda/envs/cellpose-arc/lib/python3.8/site-packages/cellpose/transforms.py", line 8, in <module>
+    from . import dynamics, utils
+  File "/home/shil5659/.conda/envs/cellpose-arc/lib/python3.8/site-packages/cellpose/dynamics.py", line 8, in <module>
+    from numba import njit, float32, int32, vectorize
+  File "/home/shil5659/.conda/envs/cellpose-arc/lib/python3.8/site-packages/numba/__init__.py", line 42, in <module>
+    from numba.np.ufunc import (vectorize, guvectorize, threading_layer,
+  File "/home/shil5659/.conda/envs/cellpose-arc/lib/python3.8/site-packages/numba/np/ufunc/__init__.py", line 3, in <module>
+    from numba.np.ufunc.decorators import Vectorize, GUVectorize, vectorize, guvectorize
+  File "/home/shil5659/.conda/envs/cellpose-arc/lib/python3.8/site-packages/numba/np/ufunc/decorators.py", line 3, in <module>
+    from numba.np.ufunc import _internal
+SystemError: initialization of _internal failed without raising an exception
+Thu  2 Nov 15:16:44 GMT 2023

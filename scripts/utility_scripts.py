@@ -17,9 +17,9 @@ def import_omero_image(image_id, conn):
     if f'{image_id}.npy' not in os.listdir('data/omero_scratch/'):  
         im_object, image = get_image(conn, image_id, no_pixels=False)
         image = image[0] # strip the time dimension 
-        np.save(f'data/omero_scratch/{image_id}.npy', image)
+        np.save(f'data/cache/{image_id}.npy', image)
     else: 
-        image = np.load(f'data/omero_scratch/{image_id}.npy', allow_pickle=True)
+        image = np.load(f'data/cache/{image_id}.npy', allow_pickle=True)
     return image
 
 def compute_rescaling_factor(image_id, conn, output_size = 0.25): 
