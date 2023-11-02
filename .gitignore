@@ -1,3 +1,4 @@
 data/
 output/
 scripts/config.py
+slurm*

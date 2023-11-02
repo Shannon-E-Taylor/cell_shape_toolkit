@@ -14,7 +14,7 @@ import pandas as pd
 
 def import_omero_image(image_id, conn):
     # cache the file to reduce load on the server 
-    if f'{image_id}.npy' not in os.listdir('data/omero_scratch/'):  
+    if f'{image_id}.npy' not in os.listdir('data/cache/'):  
         im_object, image = get_image(conn, image_id, no_pixels=False)
         image = image[0] # strip the time dimension 
         np.save(f'data/cache/{image_id}.npy', image)

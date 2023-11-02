@@ -14,13 +14,17 @@ cells_to_run=(1086825 1086827 1086822 1086832 1086844 1086837 1086838 1086841 10
 #${cells_to_run[$SLURM_ARRAY_TASK_ID]}
 date
 
+cellname='1108313'
+
 echo 'running download and spot detection'
-python scripts/preprocess_data_modular.py 1086825 1
+# python scripts/preprocess_data_modular.py $cellname 1
+
+source deactivate
 
 source activate cellpose-arc 
 
 echo 'running 2d cellpose segmentation'
-python scripts/do_2d_segmentation.py 1086825
+python scripts/do_2d_segmentation.py $cellname
 
 date 
 
