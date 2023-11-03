@@ -1,9 +1,9 @@
 #!/bin/bash
 #SBATCH --clusters=htc
 #SBATCH --job-name=VAE 
-#SBATCH --mem=64G
+#SBATCH --mem=128G
 #SBATCH --partition=short
-#SBATCH --time=00:30:00
+#SBATCH --time=01:30:00
 #SBATCH --gres=gpu:1 --constraint='gpu_mem:32GB'
 ## SBATCH --array=0-10
 
@@ -14,10 +14,12 @@ cells_to_run=(1086825 1086827 1086822 1086832 1086844 1086837 1086838 1086841 10
 #${cells_to_run[$SLURM_ARRAY_TASK_ID]}
 date
 
-cellname='1108313'
+# processed_cells=('1036826', '1108313' 1086825 1086827 1086822)
+
+cellname='1086827'
 
 echo 'running download and spot detection'
-# python scripts/preprocess_data_modular.py $cellname 1
+python scripts/preprocess_data_modular.py $cellname 1
 
 source deactivate
 

@@ -1,10 +1,8 @@
 from scipy.ndimage import gaussian_filter
 from cellpose import models
-import os 
 import numpy as np
-from scipy.ndimage import zoom
-
 import sys 
+import os 
 
 image_id = sys.argv[1]
 
@@ -24,8 +22,8 @@ def run_segmentation(image_id):
     print('starting segmentation')
     print(dapi.shape, phal.shape)
 
-    masks, flows_stitched, styles_stitched, _ = model.eval(np.array([dapi, phal]), 
-                                                        channels=[1, 2],
+    masks, _, _, _ = model.eval(np.array([dapi, phal]), 
+                                                        channels=[2, 1],
                                                         diameter=d,
                                                         resample = False, 
                                                         do_3D=False, 
