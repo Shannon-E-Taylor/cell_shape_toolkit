@@ -14,14 +14,17 @@ segmented_image = imread(path_to_input_image).astype(np.int) * 0
 
 
 # loop through every subfolder 
-list_of_folders = os.listdir(path_to_limeseg_folder)
+list_of_folders = next(os.walk(path_to_limeseg_folder))[1]
 
 for folder in list_of_folders: 
     cell_list = os.listdir(f'{path_to_limeseg_folder}/{folder}/')
 
+    # print(cell_list)
+
     for cell in cell_list: 
-        path = path_to_limeseg_folder + '/' + cell + '/T_1.ply'
+        path = f"{path_to_limeseg_folder}/{folder}/{cell}/T_1.ply"
         # only try to load the cell if we've successfully generated a label image
+        # print(path)
         if os.path.exists(path + '_.npy'): 
             cell_mask = np.load(path + '_.npy')
             x, y, z = np.nonzero(cell_mask)
@@ -32,6 +35,7 @@ for folder in list_of_folders:
             segmented_image[
                 z_put.astype(int), y_put, x_put 
                 ] = int(cell.split('_')[-1])
+    print(np.max(segmented_image))
 
 
 print(f"Got up to cell number {np.max(segmented_image)}")

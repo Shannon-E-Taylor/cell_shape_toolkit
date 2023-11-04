@@ -17,15 +17,13 @@ import sys
 # INPUTS # 
 ##########
 
-path_to_2d_seg = sys.argv[1]
-path_to_limeseg = sys.argv[2]
-f = sys.argv[3]
+image_id = sys.argv[1]
 
-print(path_to_2d_seg, path_to_limeseg, f)
-
+path_to_2d_seg = f'output/2d_segs/{image_id}.npy'
+path_to_limeseg = f'output/limeseg_output/{image_id}/whole_segmentation.tif.npz'
 seg_2d = np.load(path_to_2d_seg)
 
-erode_radius = 5
+erode_radius = 1
 
 # # the notocord and cells outside the PSM segment poorly, 
 # # and I'm not interested in them 
@@ -89,8 +87,6 @@ def get_average_precision(masks_true, masks_pred, threshold):
 # so that they look more like the limeseg ones 
 masks_eroded = []
 
-
-
 for slice in seg_2d: 
     eroded = cle.erode_labels(slice, radius=5)
     masks_eroded.append(eroded)
@@ -104,8 +100,6 @@ masks_eroded = np.array(masks_eroded)
 
 seg_to_test = np.load(path_to_limeseg)['seg']
 
-# print(list(seg_to_test.keys()))
-
 # run the script 
 eroded_metrics = get_iou(masks_eroded, seg_to_test)
 uneroded_metrics = get_iou(seg_2d, seg_to_test)
@@ -113,8 +107,8 @@ uneroded_metrics = get_iou(seg_2d, seg_to_test)
 eroded_metrics_by_cell = eroded_metrics[eroded_metrics['IOU']>0].groupby('label').mean()
 uneroded_metrics_by_cell = uneroded_metrics[uneroded_metrics['IOU']>0].groupby('label').mean()
 
-eroded_metrics.to_csv(f'../output/2d_segs/QC_eroded_masks_{f}.csv')
-uneroded_metrics.to_csv(f'../output/2d_segs/QC_uneroded_masks_{f}.csv')
+eroded_metrics.to_csv(f'output/QC/agreement_scores/QC_eroded_masks_{image_id}.csv')
+uneroded_metrics.to_csv(f'output/QC/agreement_scores/QC_uneroded_masks_{image_id}.csv')
 
-uneroded_metrics_by_cell.to_csv(f'../output/2d_segs/QC_eroded_masks_by_cell{f}.csv')
-eroded_metrics_by_cell.to_csv(f'../output/2d_segs/QC_uneoded_masks_by_cell{f}.csv')
+uneroded_metrics_by_cell.to_csv(f'output/QC/agreement_scores/QC_eroded_masks_by_cell_{image_id}.csv')
+eroded_metrics_by_cell.to_csv(f'output/QC/agreement_scores/QC_uneoded_masks_by_cell_{image_id}.csv')

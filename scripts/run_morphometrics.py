@@ -161,16 +161,23 @@ data = []
 path_to_limeseg_folder = sys.argv[1]
 path_to_morphometrics_output = sys.argv[2]
 
-if True:   
-    data = []
-    if os.path.exists(f'{path_to_limeseg_folder}/Results.csv'): 
-        results = pd.read_csv(f'{path_to_limeseg_folder}/Results.csv')
+# loop through every subfolder 
+list_of_folders = next(os.walk(path_to_limeseg_folder))[1]
+
+for folder in list_of_folders: 
+    path_to_folder = f"{path_to_limeseg_folder}/{folder}"
+    print(path_to_folder)
+    if os.path.exists(f'{path_to_folder}/Results.csv'): 
+        results = pd.read_csv(f'{path_to_folder}/Results.csv')
+        # skip cells that are broken 
+        results = results.dropna(axis = 0)
+        results = results[results['Free edges'] == 0]
         print(results.shape)
 
         cell_list = results['Cell Name']
  
         for cell in cell_list: 
-            path_ = f'{path_to_limeseg_folder}/{cell}/T_1.ply_.npy'
+            path_ = f'{path_to_folder}/{cell}/T_1.ply_.npy'
             if os.path.exists(path_): 
                 cell_info = results[results['Cell Name'] == cell]
                 surf = cell_info['Real Surface'].values[0]
@@ -180,7 +187,8 @@ if True:
                 d['label'] = int(cell.split('_')[-1])
 
                 data.append(d)
-        data_df = pd.concat(data)
-        data_df.to_csv(path_to_morphometrics_output)
     else: 
         print('Results file not found')
+
+data_df = pd.concat(data)
+data_df.to_csv(path_to_morphometrics_output)

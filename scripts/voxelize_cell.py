@@ -5,6 +5,9 @@ import numpy as np
 import sys
 import pymeshfix 
 
+
+o3d.utility.set_verbosity_level(o3d.utility.VerbosityLevel.Error)
+
 def to_voxels(path): 
     '''
     This code takes the input .ply file, converts it to voxels using vedo, and saves the output 
@@ -41,20 +44,28 @@ outfile = sys.argv[1] # path to save the new label image to
 path_to_input_image = sys.argv[2] # path to the original image you segmented, to read image dimensions from  
 path_to_limeseg_folder = sys.argv[3] # path to the folder where you saved your limeseg data 
 
-# Limeseg automatically saves each cell in its own folder
-# So to read all the cells we want a list of all of these folders 
-cell_list = os.listdir(path_to_limeseg_folder)
+# loop through every subfolder 
+list_of_folders = next(os.walk(path_to_limeseg_folder))[1]
 
-for cell in cell_list: 
-    path = path_to_limeseg_folder + '/' + cell + '/T_1.ply'
-    make_watertight(path)
-    to_voxels(path)
+for folder in list_of_folders: 
+    path_to_folder = f"{path_to_limeseg_folder}/{folder}"
+
+    cell_list = os.listdir(f'{path_to_folder}/')
+    cell_list = [i for i in cell_list if 'cell' in i]
+
+    for cell in cell_list: 
+        path = f"{path_to_folder}/{cell}/T_1.ply"
+        make_watertight(path)
+        to_voxels(path)
+
+
+    print(f"{folder} is processed")
 
 # Define the content you want to write to the file
 file_content = "Cells are voxelized and ready for analysis."
 
 # Open the file for writing
-with open(outfile, "w") as file:
+with open(f"{outfile}.txt", "w") as file:
     # Write the content to the file
     file.write(file_content)
 
